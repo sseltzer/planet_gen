@@ -1,0 +1,17 @@
+{
+  "name": "planet_gen",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node bin/Start.js",
+    "nodemon": "nodemon bin/Start.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv-extended": "^2.0.2",
+    "express": "^4.16.3",
+    "winston": "^2.4.2"
+  }
+}
