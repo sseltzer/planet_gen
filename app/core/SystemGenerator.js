@@ -1,8 +1,10 @@
+const { Logger } = require('../../core/CoreUtils');
 const Dice = require('../utilities/Dice');
 
 class SystemGenerator {
 
   constructor() {
+    this.seed = `${Math.random()}`;
     this.dice = new Dice(this.seed);
   }
 
