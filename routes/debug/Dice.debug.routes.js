@@ -1,13 +1,13 @@
 "use strict";
 const { Logger } = require("../../core/CoreUtils");
-const { Dice } = require("../../app/utilities/dice/Dice");
+const Dice = require("../../app/utilities/Dice");
 const SystemGenerator = require("../../app/core/SystemGenerator");
 class DebugDiceRoutes {
   constructor(server) {
     Logger.trace("DebugDiceRoutes : constructor");
     this.server = server;
     this.seed = `${Math.random()}`;
-    this.dice = Dice({ seed: this.seed });
+    dice = Dice({ seed: this.seed });
     this.sg = new SystemGenerator();
   }
   register(router) {
@@ -18,7 +18,7 @@ class DebugDiceRoutes {
   }
   roll(req, res, next) {
     res.send({
-      roll: this.dice
+      roll: dice
         .roll()
         .three()
         .d6()
