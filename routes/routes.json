@@ -1,6 +1,7 @@
 {
   "routes": [
     "/routes/core/RequestLogger.routes",
-    "/routes/core/HealthCheck.routes"
+    "/routes/core/HealthCheck.routes",
+    "/routes/debug/Dice.debug.routes"
   ]
 }
