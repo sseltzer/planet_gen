@@ -1,5 +1,6 @@
 const { Logger } = require('../../core/CoreUtils');
 const Dice = require('../utilities/Dice');
+const SystemConfig = require('../configs/System.config.json');
 
 class SystemGenerator {
 
@@ -20,77 +21,87 @@ class SystemGenerator {
   }
 
   generateStars() {
-    let roll = this.dice.roll().three().d6();
-    let primaryRoll = this.dice.roll().two().d6();
-    let stars = [this.generatePrimary(primaryRoll)];
-    if (roll > 10) stars.push(this.generateSecondary(primaryRoll));
-    if (roll > 15) stars.push(this.generateSecondary(primaryRoll));
-    return this.generateSystemClass(stars);
-  }
+    let rolls = this.rollSystemConfig();
 
-  generatePrimary(primaryRoll) {
-    let subRoll = this.dice.roll().d6();
-    return { type: this.generateStarType(primaryRoll, subRoll), roll: primaryRoll, subRoll };
-  }
-  generateSecondary(primaryRoll) {
-    let secondaryRoll = primaryRoll + (this.dice.roll().two().d6() - 1);
-    return { type: this.generateStarType(secondaryRoll), roll: secondaryRoll };
-  }
-  generateStarType(roll, subRoll) {
-    let type = '';
-    if (roll <= 2) {
-      if (subRoll <= 2) type = 'O';
-      else if (subRoll <= 4) type = 'B';
-      else type = 'A';
+    let metadata = this.generateSystemMetadata(rolls.rollBodiesMain);
+    let stars = [];
+    for (var i = 0; i < metadata.count; i++) {
+      if (i === 0) stars.push(this.generatePrimary(rolls.rollPrimaryMain, rolls.rollPrimarySub));
+      else stars.push(this.generateSecondary(rolls.rollPrimaryMain, rolls.rollSecondaryMain));
     }
-    if (roll === 3) type = 'F';
-    if (roll === 4) type = 'G';
-    if (roll === 5) type = 'K';
-    if (roll >=6 && roll < 14) type = 'M';
-    if (roll >= 14) type = 'L';
-    return type;
-  }
 
-  generateStarMetadata(star) {
-    switch(star.type) {
-      case 'O':
-      case 'B':
-      case 'A':
-        star.commonName = 'Blue';
-        break;
-      case 'F':
-        star.commonName = 'Blue / White';
-        break;
-      case 'G':
-        star.commonName = 'White / Yellow';
-        break;
-      case 'K':
-        star.commonName = 'Orange / Red';
-        break;
-      case 'M':
-        star.commonName = 'Red Dwarf';
-        break;
-      case 'L':
-        star.commonName = 'Brown Dwarf';
-        break;
-      default:
-        break;
+    let system = {
+      type: metadata.type,
+      stars,
     }
+    if (SystemConfig.debug) system.rollBodiesMain = rolls.rollBodiesMain;
+    return system;
   }
 
-  generateSystemClass(stars) {
-    let type = 'Void';
-    if (stars.length === 1) type = 'Solitary';
-    if (stars.length === 2) type = 'Binary';
-    if (stars.length === 3) type = 'Trinary';
-    if (stars.length > 3) type = 'Multi-Body';
-    stars.map(s => this.generateStarMetadata(s));
+  rollSystemConfig(test) {
+    if (!test) return {
+      rollBodiesMain:    this.dice.rollCommonName(SystemConfig.rolls.system.bodies.main),
+      rollPrimaryMain:   this.dice.rollCommonName(SystemConfig.rolls.system.primary.main),
+      rollPrimarySub:    this.dice.rollCommonName(SystemConfig.rolls.system.primary.sub),
+      rollSecondaryMain: this.dice.rollCommonName(SystemConfig.rolls.system.secondary.main)
+    }
     return {
-      type,
-      stars
+      rollBodiesMain:    11,
+      rollPrimaryMain:   2,
+      rollPrimarySub:    6,
+      rollSecondaryMain: 5
+    }
+  }
+
+  generateSystemMetadata(rollBodiesMain) {
+    let count = SystemConfig.taxonomy.system.bodies.default.count;
+    let type = SystemConfig.taxonomy.system.bodies.default.type;
+    let types = SystemConfig.taxonomy.system.bodies.types;
+    types.map(t => {
+      if (rollBodiesMain >= t.min && rollBodiesMain < t.max) {
+        count = t.count;
+        type = t.type;
+      }
+    });
+    return {type, count};
+  }
+  generatePrimary(rollPrimaryMain, rollPrimarySub) {
+    let star = this.generateStarType(rollPrimaryMain, rollPrimarySub);
+    if (SystemConfig.debug) star.rollPrimaryMain = rollPrimaryMain;
+    if (SystemConfig.debug) star.rollPrimarySub = rollPrimarySub;
+    return star;
+  }
+  generateSecondary(rollPrimaryMain, rollSecondaryMain) {
+    let rollSecondaryCalculated = rollPrimaryMain + rollSecondaryMain - 1;
+    let star = this.generateStarType(rollSecondaryMain);
+    if (SystemConfig.debug) star.rollPrimaryMain = rollPrimaryMain;
+    if (SystemConfig.debug) star.rollSecondaryMain = rollSecondaryMain;
+    if (SystemConfig.debug) star.rollSecondaryCalculated = rollSecondaryCalculated;
+    return star;
+  }
+  generateStarType(rollMain, rollSub) {
+    let name = SystemConfig.taxonomy.stars.default.name;
+    let sequence = SystemConfig.taxonomy.stars.default.sequence;
+
+    let types = SystemConfig.taxonomy.stars.types;
+    types.map(t => {
+      if (rollMain >= t.min && rollMain < t.max) {
+        if (t.hasOwnProperty('subroll_min') && t.hasOwnProperty('subroll_max')) {
+          if (rollSub >= t.subroll_min && rollSub < t.subroll_max) {
+            name = t.name;
+            sequence = t.sequence;
+          }
+        } else {
+          name = t.name;
+          sequence = t.sequence;
+        }
+      }
+    });
+    return {
+      name,
+      sequence
     };
   }
-
 }
 
 module.exports = SystemGenerator;

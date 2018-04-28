@@ -37,6 +37,13 @@ class Dice {
   rollDie(sides) {
     return [...Array(this.rolls)].map(i => Math.floor(this.saveable() * sides) + 1).reduce((a, b) => a + b);
   }
+
+  rollCommonName(name) {
+    if (name === "1d6") return this.one().d6();
+    if (name === "2d6") return this.two().d6();
+    if (name === "3d6") return this.three().d6();
+    return -1;
+  }
 }
 
 module.exports = Dice;

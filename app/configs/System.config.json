@@ -1,0 +1,109 @@
+{
+  "debug": true,
+  "rolls": {
+    "system": {
+      "bodies": {
+        "main": "3d6"
+      },
+      "primary": {
+        "main": "3d6",
+        "sub": "1d6"
+      },
+      "secondary": {
+        "main": "2d6"
+      }
+    }
+  },
+  "taxonomy": {
+    "system": {
+      "bodies": {
+        "default": {
+          "count": 0,
+          "type": "Void"
+        },
+        "types": [
+          {
+            "min": 3,
+            "max": 11,
+            "count": 1,
+            "type": "Solitary"
+          },
+          {
+            "min": 11,
+            "max": 15,
+            "count": 2,
+            "type": "Binary"
+          },
+          {
+            "min": 15,
+            "max": 99,
+            "count": 3,
+            "type": "Trinary"
+          }
+        ]
+      }
+    },
+    "stars": {
+      "default": {
+        "name": "Unknown",
+        "sequence": "?"
+      },
+      "types": [
+        {
+          "min": 14,
+          "max": 99,
+          "name": "Brown Dwarf",
+          "sequence": "L"
+        },
+        {
+          "min": 6,
+          "max": 14,
+          "name": "Red Dwarf",
+          "sequence": "M"
+        },
+        {
+          "min": 5,
+          "max": 6,
+          "name": "Orange / Red",
+          "sequence": "K"
+        },
+        {
+          "min": 4,
+          "max": 5,
+          "name": "G",
+          "sequence": "White / Yellow"
+        },
+        {
+          "min": 3,
+          "max": 4,
+          "name": "F",
+          "sequence": "Blue / White"
+        },
+        {
+          "min": 2,
+          "max": 3,
+          "subroll_min": 1,
+          "subroll_max": 3,
+          "name": "Blue",
+          "sequence": "A"
+        },
+        {
+          "min": 2,
+          "max": 3,
+          "subroll_min": 3,
+          "subroll_max": 5,
+          "name": "Blue",
+          "sequence": "B"
+        },
+        {
+          "min": 2,
+          "max": 3,
+          "subroll_min": 5,
+          "subroll_max": 7,
+          "name": "Blue",
+          "sequence": "O"
+        }
+      ]
+    }
+  }
+}
