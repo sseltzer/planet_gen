@@ -13,6 +13,7 @@
     "dotenv-extended": "^2.0.2",
     "express": "^4.16.3",
     "seedrandom": "^2.4.3",
+    "stampit": "^4.1.1",
     "winston": "^2.4.2"
   }
 }
