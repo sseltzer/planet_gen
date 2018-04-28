@@ -2,11 +2,13 @@ const seedrandom = require("seedrandom");
 const Die = require("./Die");
 const { compose } = require("stampit");
 
-const dice = {
-  d6: () => Die(),
-  d12: () => Die({ sides: 12 }),
-  d20: () => Die({ sides: 20 })
-};
+const dice = compose({
+  methods: {
+    d6: () => Die(),
+    d12: () => Die({ sides: 12 }),
+    d20: () => Die({ sides: 20 })
+  }
+});
 
 let Dice = compose({
   props: {
@@ -22,8 +24,7 @@ let Dice = compose({
   methods: {
     roll() {
       return this;
-    },
-    ...dice
+    }
   }
 });
 
@@ -48,4 +49,6 @@ const ThrowMany = compose({
   }
 });
 
-module.exports = compose(Dice, ThrowMany);
+const expDice = compose(Dice, ThrowMany, dice);
+const expDiceInstance = expDice({ seed: Math.random() });
+module.exports = { Dice: expDice, dice: expDiceInstance };

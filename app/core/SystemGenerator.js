@@ -1,25 +1,22 @@
 const { Logger } = require("../../core/CoreUtils");
-const Dice = require("../utilities/Dice");
+const { dice } = require("../utilities/dice/Dice");
 
 class SystemGenerator {
-  constructor() {
-    this.seed = `${Math.random()}`;
-    this.dice = Dice({ seed: this.seed });
-  }
+  constructor() {}
 
   generate() {
     let star = this.generateStars();
     return {
       star,
       random: {
-        seed: this.dice.seed,
-        state: this.dice.saveable
+        seed: dice.seed,
+        state: dice.saveable
       }
     };
   }
 
   generateStars() {
-    let roll = this.dice
+    let roll = dice
       .roll()
       .three()
       .d6();
