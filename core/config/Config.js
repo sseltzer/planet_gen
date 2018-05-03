@@ -31,7 +31,7 @@ class Config {
       require.resolve(envPath);
     } catch (err) {
       Logger.warn(`Could not resolve your specified env file at ${opts.path}.`);
-      Logger.warn(`If this is the first time you're loading, please clone schema.env into that path and fill in your desired values.`);
+      Logger.warn('If this is the first time you\'re loading, please clone schema.env into that path and fill in your desired values.');
     }
     dotenv_ext.load({
       path: opts.path,

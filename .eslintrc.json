@@ -1,0 +1,36 @@
+{
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 8
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "no-warning-comments": ["warn", { "terms": ["todo", "fixme", "xxx"], "location": "anywhere" }],
+      "indent": [2, 2],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    },
+    "globals"   : {
+      "describe"   : false,
+      "it"         : false,
+      "xit"        : false,
+      "before"     : false,
+      "beforeEach" : false,
+      "after"      : false,
+      "afterEach"  : false
+    }
+  }

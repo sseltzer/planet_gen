@@ -11,6 +11,9 @@
       },
       "secondary": {
         "main": "2d6"
+      },
+      "orbit": {
+        "main": "1d6"
       }
     }
   },
@@ -48,6 +51,28 @@
         "name": "Unknown",
         "sequence": "?"
       },
+      "orbits": [
+        {
+          "min": 1,
+          "max": 2,
+          "type": "Tight Orbit"
+        },
+        {
+          "min": 3,
+          "max": 4,
+          "type": "Close Orbit"
+        },
+        {
+          "min": 5,
+          "max": 5,
+          "type": "Moderate Orbit"
+        },
+        {
+          "min": 6,
+          "max": 6,
+          "type": "Distant Orbit"
+        }
+      ],
       "types": [
         {
           "min": 14,
