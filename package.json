@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node bin/Start.js",
     "nodemon": "nodemon bin/Start.js",
-    "test": "./node_modules/mocha/bin/mocha test/All.suite.js"
+    "test": "./node_modules/mocha/bin/mocha test/All.suite.js",
+    "lint": "./node_modules/eslint/bin/eslint.js ."
   },
   "author": "",
   "license": "ISC",

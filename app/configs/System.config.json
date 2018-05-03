@@ -49,27 +49,28 @@
     "stars": {
       "default": {
         "name": "Unknown",
-        "sequence": "?"
+        "sequence": "?",
+        "orbit": "?"
       },
       "orbits": [
         {
           "min": 1,
-          "max": 2,
+          "max": 3,
           "type": "Tight Orbit"
         },
         {
           "min": 3,
-          "max": 4,
+          "max": 5,
           "type": "Close Orbit"
         },
         {
           "min": 5,
-          "max": 5,
+          "max": 6,
           "type": "Moderate Orbit"
         },
         {
           "min": 6,
-          "max": 6,
+          "max": 7,
           "type": "Distant Orbit"
         }
       ],

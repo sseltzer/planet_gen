@@ -27,53 +27,27 @@ class SystemGenerator {
     let stars = [];
     for (var i = 0; i < metadata.count; i++) {
       if (i === 0) stars.push(this.generatePrimary(rolls.rollPrimaryMain, rolls.rollPrimarySub));
-      else stars.push(this.generateSecondary(rolls.rollPrimaryMain, rolls.rollSecondaryMain));
+      else stars.push(this.generateSecondary(rolls.rollPrimaryMain));
     }
-    this.initCompanions(stars, rolls.rollOrbitOne, rolls.rollOrbitTwo);
     let system = {
       type: metadata.type,
       stars,
     };
     if (SystemConfig.debug) system.rollBodiesMain = rolls.rollBodiesMain;
-    if (SystemConfig.debug) system.rollOrbitMain = rolls.rollOrbitMain;
-    
+
     return system;
   }
 
-  initCompanions(stars, rollOrbitOne, rollOrbitTwo) {
-    if (stars.length <= 1) return null;
-    stars[0].companions = [];
-    const orbitTypes = SystemConfig.taxonomy.stars.orbits;
-    let orbits = [
-      {companion: stars[1]}
-    ];
-    if (stars[2]) orbits.push({companion: stars[2]});
-    orbitTypes.map( o => {
-      if (rollOrbitOne >= o.min && rollOrbitOne <= o.max) {
-        orbits[0].type = o.type;
-        if (SystemConfig.debug) Logger.debug('Adding companion orbit of ' + o.type);
-      }
-      if (!!stars[2] && (rollOrbitTwo >= o.min && rollOrbitTwo <= o.max)) {
-        orbits[1].type = o.type;
-      }
-    });
-    stars[0].companions = [...stars[0].companions, ...orbits];
-  }
   rollSystemConfig(test) {
     if (!test) return {
       rollBodiesMain:    this.dice.roll(SystemConfig.rolls.system.bodies.main),
       rollPrimaryMain:   this.dice.roll(SystemConfig.rolls.system.primary.main),
-      rollPrimarySub:    this.dice.roll(SystemConfig.rolls.system.primary.sub),
-      rollSecondaryMain: this.dice.roll(SystemConfig.rolls.system.secondary.main),
-      rollOrbitOne: this.dice.roll(SystemConfig.rolls.system.orbit.main),
-      rollOrbitTwo: this.dice.roll(SystemConfig.rolls.system.orbit.main)
-      
+      rollPrimarySub:    this.dice.roll(SystemConfig.rolls.system.primary.sub)
     };
     return {
-      rollBodiesMain:    11,
-      rollPrimaryMain:   2,
-      rollPrimarySub:    6,
-      rollSecondaryMain: 5
+      rollBodiesMain:    16,
+      rollPrimaryMain:   11,
+      rollPrimarySub:    5
     };
   }
 
@@ -91,20 +65,24 @@ class SystemGenerator {
   }
   generatePrimary(rollPrimaryMain, rollPrimarySub) {
     let star = this.generateStarType(rollPrimaryMain, rollPrimarySub);
-    if (SystemConfig.debug) { 
+    if (SystemConfig.debug) {
       star.rollPrimaryMain = rollPrimaryMain;
       star.rollPrimarySub = rollPrimarySub;
       Logger.debug(`created new [${star.name}] star`);
     }
     return star;
   }
-  generateSecondary(rollPrimaryMain, rollSecondaryMain) {
+  generateSecondary(rollPrimaryMain) {
+    let rollSecondaryMain = this.dice.roll(SystemConfig.rolls.system.secondary.main);
     let rollSecondaryCalculated = rollPrimaryMain + rollSecondaryMain - 1;
-    let star = this.generateStarType(rollSecondaryMain);
+    let star = this.generateStarType(rollSecondaryCalculated);
+    let starOrbitRoll = this.dice.roll(SystemConfig.rolls.system.orbit.main);
+    star.orbit = this.generateStarOrbit(starOrbitRoll);
     if (SystemConfig.debug) {
       star.rollPrimaryMain = rollPrimaryMain;
       star.rollSecondaryMain = rollSecondaryMain;
       star.rollSecondaryCalculated = rollSecondaryCalculated;
+      star.starOrbitRoll = starOrbitRoll;
       Logger.debug('rollPrimary');
     }
     return star;
@@ -131,6 +109,19 @@ class SystemGenerator {
       name,
       sequence
     };
+  }
+
+  generateStarOrbit(rollMain) {
+    const orbitTypes = SystemConfig.taxonomy.stars.orbits;
+    let type = SystemConfig.taxonomy.stars.default.orbit;
+
+    orbitTypes.map(t => {
+      if (rollMain >= t.min && rollMain < t.max) {
+        type = t.type;
+      }
+    });
+
+    return type;
   }
 }
 

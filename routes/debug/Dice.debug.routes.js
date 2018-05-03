@@ -17,13 +17,13 @@ class DebugDiceRoutes {
     router.get('/debug/generate', this.generate.bind(this));
     return router;
   }
-  roll(req, res, next) {
+  roll(req, res, next) { // eslint-disable-line no-unused-vars
     res.send({
       'roll': this.dice.roll().three().d6()
     });
   }
 
-  generate(req, res, next) {
+  generate(req, res, next) { // eslint-disable-line no-unused-vars
     res.send(this.sg.generate());
   }
 }

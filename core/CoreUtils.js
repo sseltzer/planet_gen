@@ -4,4 +4,4 @@ const Logger = require('./logger/Logger').getInstance();
 module.exports = {
   Config,
   Logger
-}
+};
