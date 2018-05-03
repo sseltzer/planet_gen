@@ -53,4 +53,18 @@ describe(`${__filename}`, () => {
     for (var i = 0; i < expected.length; i++) expect(d.roll().one().d6()).to.be.equal(expected[i]);
     done();
   });
+
+  it('should generate known dice values based on a seed {1d10} {test}', (done) => {
+    let d = new Dice('test');
+    let expected = [9, 5, 10, 4, 4];
+    for (var i = 0; i < expected.length; i++) expect(d.roll().one().d10()).to.be.equal(expected[i]);
+    done();
+  });
+
+  it('should generate known dice values based on a seed {1d20} {test}', (done) => {
+    let d = new Dice('test');
+    let expected = [18, 9, 20, 7, 8];
+    for (var i = 0; i < expected.length; i++) expect(d.roll().one().d20()).to.be.equal(expected[i]);
+    done();
+  });
 });

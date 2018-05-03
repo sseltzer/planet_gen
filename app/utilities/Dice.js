@@ -1,5 +1,22 @@
 const seedrandom = require('seedrandom');
 
+let rolls = [
+  {
+    funct: 'one',
+    times: 1
+  }, {
+    funct: 'two',
+    times: 2
+  }, {
+    funct: 'three',
+    times: 3
+  }, {
+    funct: 'four',
+    times: 4
+  }
+];
+let die = [6, 10, 12, 20];
+
 class Dice {
 
   constructor(seed, state = false) {
@@ -7,31 +24,17 @@ class Dice {
     this.state = state;
     this.seedrandom = Math.seedrandom;
     this.saveable = seedrandom(seed, {state});
-  }
+    
+    rolls.map(r => this[r.funct] = () => {
+      this.rolls = r.times;
+      return this;
+    });
 
-  roll() {
-    return this;
-  }
-
-  one() {
-    this.rolls = 1;
-    return this;
-  }
-
-  two() {
-    this.rolls = 2;
-    return this;
-  }
-
-  three() {
-    this.rolls = 3;
-    return this;
-  }
-
-  d6() {
-    let roll = this.rollDie(6);
-    this.one();
-    return roll;
+    die.map(d => this[`d${d}`] = () => {
+      let roll = this.rollDie(d);
+      this.one();
+      return roll;
+    });
   }
 
   rollDie(sides) {
@@ -39,10 +42,17 @@ class Dice {
   }
 
   rollCommonName(name) {
-    if (name === "1d6") return this.one().d6();
-    if (name === "2d6") return this.two().d6();
-    if (name === "3d6") return this.three().d6();
-    return -1;
+    return this.roll(name);
+  }
+  roll(name) {
+    if (!name) return this;
+    if (!name.indexOf('d')) return null;
+    let rollParts = name.split('d');
+    if (rollParts.length !== 2) return null;
+    rollParts.map(rp => {if (!this[rp]) return null});
+    let rollTimes = rolls.filter(r => r.times == rollParts[0]);
+    if (!rollTimes) return null;
+    return this[rollTimes[0].funct]()[`d${rollParts[1]}`]();
   }
 }
 
