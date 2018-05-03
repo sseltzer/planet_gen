@@ -38,7 +38,7 @@ class Dice {
   }
 
   rollDie(sides) {
-    return [...Array(this.rolls)].map(i => Math.floor(this.saveable() * sides) + 1).reduce((a, b) => a + b);
+    return [...Array(this.rolls)].map(() => Math.floor(this.saveable() * sides) + 1).reduce((a, b) => a + b);
   }
 
   rollCommonName(name) {
@@ -49,7 +49,7 @@ class Dice {
     if (!name.indexOf('d')) return null;
     let rollParts = name.split('d');
     if (rollParts.length !== 2) return null;
-    rollParts.map(rp => {if (!this[rp]) return null});
+    rollParts.map(rp => {if (!this[rp]) return null;});
     let rollTimes = rolls.filter(r => r.times == rollParts[0]);
     if (!rollTimes) return null;
     return this[rollTimes[0].funct]()[`d${rollParts[1]}`]();

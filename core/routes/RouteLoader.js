@@ -1,6 +1,6 @@
 const path = require('path');
-const { Logger } = require('../CoreUtils');
-const { routes } = require("../../routes/routes.json");
+// const { Logger } = require('../CoreUtils');
+const { routes } = require('../../routes/routes.json');
 
 class RouteLoader {
   static load(server) {

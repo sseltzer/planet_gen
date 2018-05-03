@@ -10,7 +10,7 @@ const Server = require('../core/Server');
   } catch (err) {
     Logger.info('Application failed to start.');
     Logger.info('Exiting.');
-    Logger.error(err)
+    Logger.error(err);
     process.exit(1);
   }
 })();

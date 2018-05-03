@@ -1,5 +1,5 @@
 const express = require('express');
-const https = require('https');
+// const https = require('https');
 const http = require('http');
 const bodyParser = require('body-parser');
 const { Logger, Config } = require('./CoreUtils');
@@ -10,7 +10,7 @@ class Server {
   start(options = {}) {
     Config.load();
     let httpPort = options.httpPort || Config.env.HTTP_PORT || 3000;
-    let httpsPort = options.httpsPort || Config.env.HTTPS_PORT || 3443;
+    // let httpsPort = options.httpsPort || Config.env.HTTPS_PORT || 3443;
 
     this.app = express();
     this.router = express.Router();

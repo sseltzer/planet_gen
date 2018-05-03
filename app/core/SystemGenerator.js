@@ -1,11 +1,11 @@
 const { Logger } = require('../../core/CoreUtils');
-const Dice = require('../utilities/Dice');
+const Dice  = require('../utilities/Dice');
 const SystemConfig = require('../configs/System.config.json');
 
 class SystemGenerator {
 
-  constructor() {
-    this.seed = `${Math.random()}`;
+  constructor(seed) {
+    this.seed = seed || SystemConfig.seed || `${Math.random()}`;
     this.dice = new Dice(this.seed);
   }
 
@@ -17,7 +17,7 @@ class SystemGenerator {
         seed: this.dice.seed,
         state: this.dice.saveable
       }
-    }
+    };
   }
 
   generateStars() {
@@ -27,30 +27,28 @@ class SystemGenerator {
     let stars = [];
     for (var i = 0; i < metadata.count; i++) {
       if (i === 0) stars.push(this.generatePrimary(rolls.rollPrimaryMain, rolls.rollPrimarySub));
-      else stars.push(this.generateSecondary(rolls.rollPrimaryMain, rolls.rollSecondaryMain));
+      else stars.push(this.generateSecondary(rolls.rollPrimaryMain));
     }
-
     let system = {
       type: metadata.type,
       stars,
-    }
+    };
     if (SystemConfig.debug) system.rollBodiesMain = rolls.rollBodiesMain;
+
     return system;
   }
 
   rollSystemConfig(test) {
     if (!test) return {
-      rollBodiesMain:    this.dice.rollCommonName(SystemConfig.rolls.system.bodies.main),
-      rollPrimaryMain:   this.dice.rollCommonName(SystemConfig.rolls.system.primary.main),
-      rollPrimarySub:    this.dice.rollCommonName(SystemConfig.rolls.system.primary.sub),
-      rollSecondaryMain: this.dice.rollCommonName(SystemConfig.rolls.system.secondary.main)
-    }
+      rollBodiesMain:    this.dice.roll(SystemConfig.rolls.system.bodies.main),
+      rollPrimaryMain:   this.dice.roll(SystemConfig.rolls.system.primary.main),
+      rollPrimarySub:    this.dice.roll(SystemConfig.rolls.system.primary.sub)
+    };
     return {
-      rollBodiesMain:    11,
-      rollPrimaryMain:   2,
-      rollPrimarySub:    6,
-      rollSecondaryMain: 5
-    }
+      rollBodiesMain:    16,
+      rollPrimaryMain:   11,
+      rollPrimarySub:    5
+    };
   }
 
   generateSystemMetadata(rollBodiesMain) {
@@ -67,16 +65,26 @@ class SystemGenerator {
   }
   generatePrimary(rollPrimaryMain, rollPrimarySub) {
     let star = this.generateStarType(rollPrimaryMain, rollPrimarySub);
-    if (SystemConfig.debug) star.rollPrimaryMain = rollPrimaryMain;
-    if (SystemConfig.debug) star.rollPrimarySub = rollPrimarySub;
+    if (SystemConfig.debug) {
+      star.rollPrimaryMain = rollPrimaryMain;
+      star.rollPrimarySub = rollPrimarySub;
+      Logger.debug(`created new [${star.name}] star`);
+    }
     return star;
   }
-  generateSecondary(rollPrimaryMain, rollSecondaryMain) {
+  generateSecondary(rollPrimaryMain) {
+    let rollSecondaryMain = this.dice.roll(SystemConfig.rolls.system.secondary.main);
     let rollSecondaryCalculated = rollPrimaryMain + rollSecondaryMain - 1;
-    let star = this.generateStarType(rollSecondaryMain);
-    if (SystemConfig.debug) star.rollPrimaryMain = rollPrimaryMain;
-    if (SystemConfig.debug) star.rollSecondaryMain = rollSecondaryMain;
-    if (SystemConfig.debug) star.rollSecondaryCalculated = rollSecondaryCalculated;
+    let star = this.generateStarType(rollSecondaryCalculated);
+    let starOrbitRoll = this.dice.roll(SystemConfig.rolls.system.orbit.main);
+    star.orbit = this.generateStarOrbit(starOrbitRoll);
+    if (SystemConfig.debug) {
+      star.rollPrimaryMain = rollPrimaryMain;
+      star.rollSecondaryMain = rollSecondaryMain;
+      star.rollSecondaryCalculated = rollSecondaryCalculated;
+      star.starOrbitRoll = starOrbitRoll;
+      Logger.debug('rollPrimary');
+    }
     return star;
   }
   generateStarType(rollMain, rollSub) {
@@ -101,6 +109,19 @@ class SystemGenerator {
       name,
       sequence
     };
+  }
+
+  generateStarOrbit(rollMain) {
+    const orbitTypes = SystemConfig.taxonomy.stars.orbits;
+    let type = SystemConfig.taxonomy.stars.default.orbit;
+
+    orbitTypes.map(t => {
+      if (rollMain >= t.min && rollMain < t.max) {
+        type = t.type;
+      }
+    });
+
+    return type;
   }
 }
 
