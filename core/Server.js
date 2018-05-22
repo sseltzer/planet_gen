@@ -35,7 +35,7 @@ class Server {
     // }
 
     RouteLoader.load(this);
-    Logger.info('App started.);
+    Logger.info('App started.');
   }
 
   async stop() {
